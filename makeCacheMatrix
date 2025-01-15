@@ -1,0 +1,44 @@
+#Create a function to set up the cache
+
+makeCacheVector <- function(x = numeric()) {
+  # Variable to store the cached mean
+  mean_cache <- NULL
+  
+  # Set the value of the vector
+  set <- function(y) {
+    x <<- y
+    mean_cache <<- NULL  # Clear the cache if the vector changes
+  }
+  
+  # Get the value of the vector
+  get <- function() x
+  
+  # Set the cached mean value
+  setMean <- function(mean_value) mean_cache <<- mean_value
+  
+  # Get the cached mean value
+  getMean <- function() mean_cache
+  
+  # Return the list of functions to interact with the cache
+  list(set = set, get = get, setMean = setMean, getMean = getMean)
+}
+
+#Write a function to compute the mean (with caching)
+cacheMean <- function(x, ...) {
+  # Check if the mean is already cached
+  cached_mean <- x$getMean()
+  
+  if (!is.null(cached_mean)) {
+    message("Getting cached data")
+    return(cached_mean)  # Return the cached mean if available
+  }
+  
+  # If not cached, compute the mean
+  data <- x$get()
+  mean_value <- mean(data, ...)
+  
+  # Cache the computed mean
+  x$setMean(mean_value)
+  
+  return(mean_value)
+}
